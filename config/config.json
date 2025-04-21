@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "bayuseptyannurhidayat",
+    "password": null,
+    "database": "beliyuk_dev",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "bayuseptyannurhidayat",
+    "password": null,
+    "database": "beliyuk_test",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "postgres",
+    "password": null,
+    "database": "beliyuk_prod",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
+}
