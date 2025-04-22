@@ -1,0 +1,241 @@
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+          enum: [user, admin]
+    Product:
+      type: object
+      properties:
+        name:
+          type: string
+        price:
+          type: number
+    Purchase:
+      type: object
+      properties:
+        productId:
+          type: integer
+        quantity:
+          type: integer
+        purchaseDate:
+          type: string
+          format: date-time
+
+paths:
+  /register:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "200":
+          description: User registered successfully
+        "400":
+          description: Bad request or email already exists
+
+  /login:
+    post:
+      tags:
+        - Authentication
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                properties:
+                  token:
+                    type: string
+        "400":
+          description: Invalid credentials
+
+  /products:
+    get:
+      tags:
+        - Products
+      summary: Get all products
+      responses:
+        "200":
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+
+    post:
+      tags:
+        - Products
+      summary: Create a new product (Admin only)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+      responses:
+        "201":
+          description: Product created successfully
+        "403":
+          description: Forbidden - Admin access required
+
+  /products/{id}:
+    get:
+      tags:
+        - Products
+      summary: Get product by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Product details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        "404":
+          description: Product not found
+
+    put:
+      tags:
+        - Products
+      summary: Update product (Admin only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+      responses:
+        "200":
+          description: Product updated successfully
+        "403":
+          description: Forbidden - Admin access required
+        "404":
+          description: Product not found
+
+    delete:
+      tags:
+        - Products
+      summary: Delete product (Admin only)
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Product deleted successfully
+        "403":
+          description: Forbidden - Admin access required
+        "404":
+          description: Product not found
+
+  /purchase:
+    post:
+      tags:
+        - Purchases
+      summary: Create a purchase
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Purchase"
+      responses:
+        "201":
+          description: Purchase created successfully
+        "400":
+          description: Bad request
+        "401":
+          description: Unauthorized
+
+  /purchases:
+    get:
+      tags:
+        - Purchases
+      summary: Get all purchases (Admin only)
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of all purchases
+        "403":
+          description: Forbidden - Admin access required
+
+  /purchases/user:
+    get:
+      tags:
+        - Purchases
+      summary: Get user purchases
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of user purchases
+        "401":
+          description: Unauthorized
+
+  /profile:
+    get:
+      tags:
+        - User
+      summary: Get user profile
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "401":
+          description: Unauthorized
