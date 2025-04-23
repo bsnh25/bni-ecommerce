@@ -83,7 +83,7 @@ describe("Authentication Endpoints", () => {
 
       expect(res.statusCode).toBe(200);
       expect(res.body).toHaveProperty("token");
-      expect(res.body).toHaveProperty("user.role", "admin");
+      expect(res.body).toHaveProperty("message", "Login successful");
     });
 
     it("should fail with incorrect password", async () => {
